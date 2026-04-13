@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "keynote-bcc",
+    "name": "BAACC at BCC",
     "slug": "keynote-bcc",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,7 +13,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {
@@ -21,10 +21,39 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.keynotebcc"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          },
+          "ios": {
+            "useFrameworks": "static",
+            "deploymentTarget": "17.6",
+            "buildReactNativeFromSource": true
+          }
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Flego accede a la cámara de tu dispositivo para poder capturar evidencias de tus movimientos así como cargar documentos.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Permitir a Flego utilizar FaceID para iniciar sesión con tu cuenta."
+        }
+      ]
+    ]
   }
 }
