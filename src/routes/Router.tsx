@@ -3,10 +3,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SetNewMember from '@core/SetNewMember';
 import ControlCenter from '@public/ControlCenter';
 import QuizKeynote from '@core/QuizKeynote';
+import OnboardingQuiz from '@core/OnboardingQuiz';
+import { IS_ANDROID } from '../constants/platform';
 
 const Stack = createNativeStackNavigator();
 
-const Router = function () {
+const RouterRoot = function () {
 	return <Stack.Navigator
 		initialRouteName='ControlCenter'>
 		<Stack.Screen
@@ -32,12 +34,28 @@ const Router = function () {
 			component={QuizKeynote}
 			options={{
 				headerTitle: 'Quiz',
+				gestureEnabled: false,
 				headerTitleStyle: {
 					fontSize: 28,
 				},
-				gestureEnabled: false
 			}} />
+
+		<Stack.Screen
+			name='OnboardingQuiz'
+			component={OnboardingQuiz}
+			options={{
+				headerShown: !IS_ANDROID,
+				...(IS_ANDROID ? {
+					presentation: 'formSheet',
+					sheetCornerRadius: 32,
+					sheetAllowedDetents: [0.5, 0.9]
+				} : {
+					presentation: 'modal',
+					gestureEnabled: false
+				})
+			}}
+		/>
 	</Stack.Navigator>;
 };
 
-export default Router;
+export default RouterRoot;

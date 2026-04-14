@@ -1,12 +1,10 @@
-## 🚚
+## 🇲🇽
 
 **BCC Keynote** it is _powered by_ the following technologies:
 
 📱 **Mobile application**. `TypeScript` with `React Native (Expo)`.
 
 ⚙️ **Backend**. `C#` for API's creation and database connection.
-
-🗄️ **Database**. `SQL Server` as database engine.
 
 ## Contribute to the project
 

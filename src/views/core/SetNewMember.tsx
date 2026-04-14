@@ -17,6 +17,15 @@ const SetNewMember = function () {
 	const registerNewMember = async function () {
 		try {
 			hapticFeedback('light');
+			if (!name || !name.trim())
+				throw new Error(`00Ingresa tu nombre completo para poder continuar.`);
+			if (!company || !company.trim())
+				throw new Error(`00Ingresa la compañia para poder continuar.`);
+			if (!email || !email.trim())
+				throw new Error(`00Ingresa el correo electrónico para poder continuar.`);
+			if (!phone || !phone.trim())
+				throw new Error(`00Ingresa tu número de celular para poder continuar.`);
+
 			setIsSending(true);
 			const sendResponse = await fetch(`http://baacc.dyndns.org:3091/api/whatsapp/send`, {
 				method: 'POST',
@@ -36,6 +45,8 @@ const SetNewMember = function () {
 			/// const sendPayload: IPayloadResponse = await sendResponse.json();
 			// if (!sendPayload.flag)
 			// 	throw new Error(`00${sendPayload.message}`);
+			setPhone('');
+			setEmail('');
 			Alert.alert('Grandioso', 'Tus datos han sido registrados correctamente.');
 		} catch (ex) {
 			toastExeption(ex);
@@ -55,14 +66,14 @@ const SetNewMember = function () {
 				autoCapitalize='words'
 				placeholder='Nombre Completo'
 				placeholderTextColor='#333'
-				className='mt-1 rounded-full border-2 border-gray-100 focus:border-green-500 pl-4 pr-12 h-14'
+				className='mt-1 rounded-full border-2 border-gray-100 focus:border-lime-500 pl-4 pr-12 h-14'
 				cursorColor='black'
 				selectionColor='#bef264'
 			/>
 			<Ionicons
 				name='person'
 				size={20}
-				className='absolute right-5 text-green-600'
+				className='absolute right-5 text-lime-600'
 			/>
 		</View>
 

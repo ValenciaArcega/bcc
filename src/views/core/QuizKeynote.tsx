@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useMemo, useState } from "react";
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { View, Text, StyleSheet, ScrollView, Image, Alert, BackHandler } from "react-native";
+import { useFlow } from '@/src/hooks/useFlow';
 
 interface IQuestion {
 	answers: {
@@ -30,12 +31,16 @@ const shuffle = <T,>(arr: T[]): T[] => {
 
 const QuizKeynote = function ({ route }: any) {
 	const props: { isSoftware: boolean; } = route.params;
+	const { go } = useFlow();
+
 	const [sessionQuestions, setSessionQuestions] = useState<IQuestion[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 	const [finished, setFinished] = useState(false);
 
 	useEffect(() => {
+		go.navigate('OnboardingQuiz');
+		return;
 		const session = shuffle(props.isSoftware ? HC_QUESTIONS : HC_QUESTIONS_AUTO)
 			.slice(0, 4)
 			.map((q) => ({ ...q }));
@@ -120,7 +125,7 @@ const QuizKeynote = function ({ route }: any) {
 				<Animated.View
 					entering={FadeInDown.duration(500)}
 					style={{
-						marginTop: 24,
+						marginTop: 16,
 						width: 232,
 						height: 240,
 					}}>
