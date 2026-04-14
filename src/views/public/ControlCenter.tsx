@@ -1,19 +1,8 @@
-import Pressa from '@/src/components/Pressa';
-import { useFlow } from '@/src/hooks/useFlow';
-import { hapticFeedback } from '@/src/utils/haptics';
+import Pressa from '@components/Pressa';
+import { useFlow } from '@hooks/useFlow';
 import { Ionicons } from '@expo/vector-icons';
+import { hapticFeedback } from '@utils/haptics';
 import { Image, Text, View } from 'react-native';
-
-interface IQuestion {
-	answers: {
-		id: number;
-		name: string;
-	}[];
-	description: string;
-	id: number;
-	isAnswered: boolean;
-	rightAnswer: number;
-}
 
 const ControlCenter = function () {
 	const { go } = useFlow();
@@ -25,55 +14,55 @@ const ControlCenter = function () {
 			source={{ uri: 'https://baacc.mx/wp-content/uploads/2024/09/baacc-header-b.png' }}
 		/>
 		<Pressa
-			className='mt-10 bg-green-500 rounded-full px-5 self-center flex-row gap-x-2 items-center justify-center h-14'
+			className='mt-10 bg-lime-500 rounded-full w-[70%] max-w-[432px] flex-row gap-x-2 items-center justify-between px-4 h-14'
 			onPress={() => {
 				hapticFeedback('ultralight');
 				go.navigate('SetNewMember');
 			}}>
-			<Ionicons
-				name='create-outline'
-				size={22}
-				className='text-white'
-			/>
 			<Text className='font-medium text-base text-white'>
 				Nuevo Registro
 			</Text>
+			<Ionicons
+				name='create-outline'
+				size={20}
+				className='text-white'
+			/>
 		</Pressa>
 
 		<Pressa
-			className='mt-6 bg-orange-400 rounded-full px-5 self-center flex-row gap-x-2 items-center justify-center h-14'
+			className='mt-6 bg-orange-400 rounded-full w-[70%] max-w-[432px] flex-row gap-x-2 items-center justify-between px-4 h-14'
 			onPress={() => {
 				hapticFeedback('ultralight');
 				go.navigate('QuizKeynote', {
 					isSoftware: true,
 				});
 			}}>
+			<Text className='font-medium text-base text-white'>
+				Quiz de Software
+			</Text>
 			<Ionicons
 				name='code-outline'
 				size={22}
 				className='text-white'
 			/>
-			<Text className='font-medium text-base text-white'>
-				Quiz de Software
-			</Text>
 		</Pressa>
 
 		<Pressa
-			className='mt-6 bg-blue-400 rounded-full px-5 self-center flex-row gap-x-2 items-center justify-center h-14'
+			className='mt-6 bg-blue-400 rounded-full w-[70%] max-w-[432px] flex-row gap-x-2 items-center justify-between px-4 h-14'
 			onPress={() => {
 				hapticFeedback('ultralight');
 				go.navigate('QuizKeynote', {
 					isSoftware: false,
 				});
 			}}>
-			<Ionicons
-				name='code-outline'
-				size={22}
-				className='text-white'
-			/>
 			<Text className='font-medium text-base text-white'>
 				Quiz de Automatización
 			</Text>
+			<Ionicons
+				name='pulse-outline'
+				size={22}
+				className='text-white'
+			/>
 		</Pressa>
 
 	</View>;

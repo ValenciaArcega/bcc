@@ -3,7 +3,9 @@ import { gs } from '@constants/generalStyles';
 import { twBtns } from '@utils/tw-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TextInput, View } from 'react-native';
+import { toastExeption } from '@utils/primitives/errors';
+import { hapticFeedback } from '@utils/haptics';
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, View } from 'react-native';
 
 const SetNewMember = function () {
 	const [name, setName] = useState('');
@@ -12,10 +14,40 @@ const SetNewMember = function () {
 	const [phone, setPhone] = useState('');
 	const [isSending, setIsSending] = useState(false);
 
+	const registerNewMember = async function () {
+		try {
+			hapticFeedback('light');
+			setIsSending(true);
+			const sendResponse = await fetch(`http://baacc.dyndns.org:3091/api/whatsapp/send`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					"nombre": name,
+					"telefono": phone,
+					"compania": company,
+					"correo": email
+				})
+			});
+			console.log(sendResponse);
+			if (!sendResponse.ok)
+				throw new Error(`10`);
+			/// const sendPayload: IPayloadResponse = await sendResponse.json();
+			// if (!sendPayload.flag)
+			// 	throw new Error(`00${sendPayload.message}`);
+			Alert.alert('Grandioso', 'Tus datos han sido registrados correctamente.');
+		} catch (ex) {
+			toastExeption(ex);
+		} finally {
+			setIsSending(false);
+		}
+	};
+
 	return <ScrollView
 		className='px-5 bg-white pt-8'
 		style={gs.scroll}>
-		<View className='justify-center mt-2'>
+		<View className='justify-center w-full max-w-[500px] self-center mt-2'>
 			<TextInput
 				value={name}
 				onChangeText={setName}
@@ -34,7 +66,7 @@ const SetNewMember = function () {
 			/>
 		</View>
 
-		<View className='justify-center mt-4'>
+		<View className='justify-center w-full max-w-[500px] self-center mt-4'>
 			<TextInput
 				value={company}
 				onChangeText={setCompany}
@@ -52,7 +84,7 @@ const SetNewMember = function () {
 			/>
 		</View>
 
-		<View className='justify-center mt-4'>
+		<View className='justify-center w-full max-w-[500px] self-center mt-4'>
 			<TextInput
 				value={email}
 				onChangeText={setEmail}
@@ -72,7 +104,7 @@ const SetNewMember = function () {
 			/>
 		</View>
 
-		<View className='justify-center mt-4'>
+		<View className='justify-center w-full max-w-[500px] self-center mt-4'>
 			<TextInput
 				value={phone}
 				onChangeText={setPhone}
@@ -93,7 +125,10 @@ const SetNewMember = function () {
 			/>
 		</View>
 
-		<Pressa className={twBtns.baseAcrom}>
+		<Pressa
+			disabled={isSending}
+			onPress={registerNewMember}
+			className={twBtns.baseAcrom}>
 			{isSending
 				? <ActivityIndicator className={twBtns.txtAcrom} />
 				: <>

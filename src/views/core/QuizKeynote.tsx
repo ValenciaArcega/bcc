@@ -1,11 +1,11 @@
-import Pressa from '@/src/components/Pressa';
-import { gs } from '@/src/constants/generalStyles';
-import { ERR_TITLE } from '@/src/constants/labels';
-import { hapticFeedback } from '@/src/utils/haptics';
+import Pressa from '@components/Pressa';
+import { gs } from '@constants/generalStyles';
+import { ERR_TITLE } from '@constants/labels';
+import { hapticFeedback } from '@utils/haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useMemo, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert, BackHandler } from "react-native";
-import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
+import { View, Text, StyleSheet, ScrollView, Image, Alert, BackHandler } from "react-native";
 
 interface IQuestion {
 	answers: {
@@ -19,8 +19,6 @@ interface IQuestion {
 	selectedAnswer?: number;
 }
 
-// const shuffle = <T,>(arr: T[]): T[] =>
-// 	[...arr].sort(() => Math.random() - 0.5);
 const shuffle = <T,>(arr: T[]): T[] => {
 	const result = [...arr];
 	for (let i = result.length - 1;i > 0;i--) {
@@ -87,24 +85,24 @@ const QuizKeynote = function ({ route }: any) {
 		const getRankingData = () => {
 			if (correctAnswers === 4) {
 				return {
-					label: "Expert",
+					label: "¡Pero mira ese expertise!",
 					image: require("@/assets/images/butterfly-trophy.png"),
 				};
 			}
 			if (correctAnswers >= 3) {
 				return {
-					label: "Advanced",
+					label: "De un nivel muy avanzado",
 					image: require("@/assets/images/butterfly-medal.png"),
 				};
 			}
 			if (correctAnswers >= 2) {
 				return {
-					label: "Intermediate",
+					label: "Un par de detalles y ya lo tienes...",
 					image: require("@/assets/images/butterfly-thinking.png"),
 				};
 			}
 			return {
-				label: "Beginner",
+				label: "¡Hasta los mejores cometen errores!",
 				image: require("@/assets/images/butterfly-tired.png"),
 			};
 		};
@@ -142,14 +140,14 @@ const QuizKeynote = function ({ route }: any) {
 					</Text>
 				</Text>
 
-				<View className="mt-8 w-full">
+				<View className="mt-8 w-full flex-row flex-wrap items-center justify-center gap-4">
 					{sessionQuestions.map((q, index) => (
-						<View key={q.id} className="mb-3 p-4 rounded-3xl border border-gray-100">
+						<View key={q.id} className="w-full max-w-[500px] mb-3 p-4 rounded-3xl border border-gray-100">
 							<Text className="font-semibold mb-2">
 								{index + 1}. {q.description}
 							</Text>
 
-							{q.answers.map((a) => {
+							{q.answers.map((a, indexQuestions) => {
 								const isSelected = a.id === q.selectedAnswer;
 								const isRight = a.id === q.rightAnswer;
 
@@ -160,7 +158,7 @@ const QuizKeynote = function ({ route }: any) {
 									textStyle = "text-red-600";
 
 								return (
-									<View className={`rounded-full border flex-row justify-between ${isRight
+									<View key={indexQuestions} className={`rounded-full border flex-row justify-between ${isRight
 										? 'mt-1 py-1 px-2 border-green-100 bg-green-50'
 										: (isSelected && !isRight)
 											? 'mt-1 py-1 px-2 border-red-100 bg-red-50'
@@ -221,6 +219,7 @@ const QuizKeynote = function ({ route }: any) {
 					<Pressa
 						isInner
 						key={a.id}
+						className={'w-full max-w-[500px]'}
 						style={[
 							styles.answerButton,
 							selectedAnswer === a.id && styles.answerSelected,
@@ -277,6 +276,7 @@ const styles = StyleSheet.create({
 	},
 	answersContainer: {
 		width: "100%",
+		alignItems: 'center',
 		gap: 12,
 	},
 	answerButton: {
