@@ -39,8 +39,8 @@ const QuizKeynote = function ({ route }: any) {
 	const [finished, setFinished] = useState(false);
 
 	useEffect(() => {
-		go.navigate('OnboardingQuiz');
-		return;
+		// go.navigate('OnboardingQuiz');
+		// return;
 		const session = shuffle(props.isSoftware ? HC_QUESTIONS : HC_QUESTIONS_AUTO)
 			.slice(0, 4)
 			.map((q) => ({ ...q }));

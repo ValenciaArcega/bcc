@@ -5,14 +5,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { toastExeption } from '@utils/primitives/errors';
 import { hapticFeedback } from '@utils/haptics';
-import { ActivityIndicator, Alert, ScrollView, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Image, Keyboard, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useFlow } from '@hooks/useFlow';
+import { REG_EMAIL } from '@constants/regex';
 
 const SetNewMember = function () {
+	const { go } = useFlow();
+
 	const [name, setName] = useState('');
 	const [company, setCompany] = useState('');
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState('');
 	const [isSending, setIsSending] = useState(false);
+	const [isDone, setIsDone] = useState(false);
 
 	const registerNewMember = async function () {
 		try {
@@ -23,32 +28,33 @@ const SetNewMember = function () {
 				throw new Error(`00Ingresa la compañia para poder continuar.`);
 			if (!email || !email.trim())
 				throw new Error(`00Ingresa el correo electrónico para poder continuar.`);
+			if (!email.match(REG_EMAIL))
+				throw new Error(`00Asegúrate de ingresar un formato de correo válido.`);
 			if (!phone || !phone.trim())
 				throw new Error(`00Ingresa tu número de celular para poder continuar.`);
 
 			setIsSending(true);
-			const sendResponse = await fetch(`http://baacc.dyndns.org:3091/api/whatsapp/send`, {
+			const payload = {
+				"nombre": name,
+				"telefono": phone,
+				"compania": company,
+				"correo": email
+			};
+			const sendResponse = await fetch(`https://baacc.dyndns.org:8019/api/whatsapp/send`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({
-					"nombre": name,
-					"telefono": phone,
-					"compania": company,
-					"correo": email
-				})
+				body: JSON.stringify(payload)
 			});
-			console.log(sendResponse);
-			if (!sendResponse.ok)
-				throw new Error(`10`);
-			/// const sendPayload: IPayloadResponse = await sendResponse.json();
-			// if (!sendPayload.flag)
-			// 	throw new Error(`00${sendPayload.message}`);
+			const sendPayload = await sendResponse.json();
+			if (!sendPayload.ok)
+				throw new Error(`01${sendPayload.message}`);
 			setPhone('');
 			setEmail('');
-			Alert.alert('Grandioso', 'Tus datos han sido registrados correctamente.');
-		} catch (ex) {
+			setIsDone(true);
+			Keyboard.dismiss();
+		} catch (ex: any) {
 			toastExeption(ex);
 		} finally {
 			setIsSending(false);
@@ -149,10 +155,84 @@ const SetNewMember = function () {
 						color='white'
 					/>
 					<Text className={twBtns.txtAcrom}>
-						Enviar Token
+						Comenzar Quiz
 					</Text>
 				</>}
 		</Pressa>
+
+		<Modal transparent animationType="fade" visible={isDone}>
+			<Pressable
+				className='bg-black/50 items-center justify-center'
+				style={[StyleSheet.absoluteFill, {
+					backgroundColor: 'rgba(0,0,0,0.4)'
+				}]}>
+				<View className='rounded-[32px] max-w-[96%] bg-white p-5'>
+					<Pressable onPress={() => setIsDone(false)} className='self-end'>
+						<Ionicons
+							name='close-outline'
+							size={30}
+							color='black'
+						/>
+					</Pressable>
+					<Ionicons
+						name='checkmark-circle'
+						className='text-green-600 self-center'
+						size={24}
+					/>
+					<Text className='text-center text-gray-400 font-medium'>
+						¡Fantástico registro éxitoso!
+					</Text>
+					<Text className='mt-5 text-center text-3xl font-semibold'>
+						¿Cúal es tu área de especialización?
+					</Text>
+					<View className='flex-row items-center justify-between gap-4 flex-wrap pt-8'>
+						<Pressa
+							outerScale={0.9}
+							className='bg-gray-100 border border-gray-200 rounded-3xl w-[332px] gap-y-2 items-center justify-between p-4'
+							onPress={() => {
+								hapticFeedback('ultralight');
+								go.navigate('QuizKeynote', {
+									isSoftware: true,
+								});
+								setIsDone(false);
+							}}>
+							<View className='h-44 w-64'>
+								<Image
+									resizeMode='contain'
+									className='w-full h-full'
+									source={require("@/assets/images/utils/software.png")}
+								/>
+							</View>
+							<Text className='font-medium text-xl text-black'>
+								Desarrollo de Software
+							</Text>
+						</Pressa>
+
+						<Pressa
+							outerScale={0.9}
+							className='bg-gray-100 border border-gray-200 rounded-3xl w-[332px] gap-y-2 items-center justify-between p-4'
+							onPress={() => {
+								hapticFeedback('ultralight');
+								go.navigate('QuizKeynote', {
+									isSoftware: false,
+								});
+								setIsDone(false);
+							}}>
+							<View className='h-44 w-64'>
+								<Image
+									resizeMode='contain'
+									className='w-full h-full'
+									source={require("@/assets/images/utils/automation.png")}
+								/>
+							</View>
+							<Text className='font-medium text-xl text-black'>
+								Automatización & Robótica
+							</Text>
+						</Pressa>
+					</View>
+				</View>
+			</Pressable>
+		</Modal>
 
 	</ScrollView>;
 };

@@ -15,16 +15,13 @@ const RouterRoot = function () {
 			name="ControlCenter"
 			component={ControlCenter}
 			options={{
-				headerTitle: 'Centro de Control',
-				headerTitleStyle: {
-					fontSize: 28,
-				}
+				headerShown: false,
 			}} />
 		<Stack.Screen
 			name="SetNewMember"
 			component={SetNewMember}
 			options={{
-				headerTitle: 'Nuevo Registro',
+				headerTitle: 'Prospecto',
 				headerTitleStyle: {
 					fontSize: 28,
 				}
